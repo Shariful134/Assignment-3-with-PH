@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 const createAdminIntoDB = async (payload: TAdmin) => {
   const user = await Admin.findOne({ email: payload.email });
   if (user) {
-    throw new AppError(HttpStatus.FORBIDDEN, 'Admin already exists');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'Admin already exists');
   }
 
   const result = await Admin.create(payload);
@@ -24,12 +24,12 @@ const loginAdminIntoDB = async (payload: TAdminLogin) => {
 
   //checking user is exists
   if (!user) {
-    throw new Error('Admin is not found!');
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //check if the password is correct or uncorrect
   if (!(await Admin.isPasswordMatched(payload?.password, user?.password))) {
-    throw new Error(' This Password do not Matched!');
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //creating a token and sent to the client side
@@ -60,13 +60,13 @@ const blockedUserByAdminIntoDB = async (
 
   //check if the user is exists
   if (!user) {
-    throw new Error('User is not Found!');
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //check if user is blocked or unblocked
   const isBlocked = user?.isBlocked;
   if (isBlocked) {
-    throw new Error('User Allready Blocked!');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'User Allready Blocked!');
   }
 
   const result = await User.findByIdAndUpdate(id, payload);
@@ -79,7 +79,7 @@ const deleteBlogbyAdminIntoDB = async (id: string) => {
 
   //check if the user is Exists
   if (!blog) {
-    throw new Error('Blog is not Found!');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'Blog is not Found!');
   }
 
   const result = await Blog.findByIdAndDelete(id);

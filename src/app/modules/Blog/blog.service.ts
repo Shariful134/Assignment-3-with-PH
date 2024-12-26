@@ -1,4 +1,6 @@
+import { HttpStatus } from 'http-status-ts';
 import QueryBuilder from '../../builder/QueryBuilder';
+import AppError from '../../errors/AppError';
 import { User } from '../User/user.model';
 import { blogSearchAbleFields } from './blog.constant';
 import { TBlog } from './blog.interface';
@@ -9,7 +11,7 @@ const createBlogIntoDB = async (payload: TBlog) => {
   const user = await User.findById(payload.author);
 
   if (!user) {
-    throw new Error('User not found. Blog creation aborted.');
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
   const result = await Blog.create(payload);
   return result;
@@ -23,6 +25,11 @@ const updatedBlogIntoDB = async (id: string, payload: Partial<TBlog>) => {
 
 //delete a Blog
 const deleteBlogFromDB = async (id: string) => {
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
+  }
   const result = await Blog.findByIdAndDelete(id);
   return result;
 };

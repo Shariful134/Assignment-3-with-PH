@@ -12,11 +12,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     //if the token is sent to the client side
     if (!token) {
-      throw new AppError(HttpStatus.UNAUTHORIZED, 'Your are not Authorized');
+      throw new AppError(HttpStatus.UNAUTHORIZED, 'Your are not Authorized!');
     }
 
     //check if the token is valid
-
     jwt.verify(
       token,
       config.jwt_access_secret as string,

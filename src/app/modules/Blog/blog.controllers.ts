@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { RequestHandler } from 'express';
 import { blogServices } from './blog.service';
-import sendResponse from '../../utils/sendResponse';
+import { sendRespons, sendResponse } from '../../utils/sendResponse';
 import { HttpStatus } from 'http-status-ts';
 import catchAsync from '../../utils/catchAsync';
 
@@ -24,7 +24,7 @@ const updatedBlog: RequestHandler = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statusCode: HttpStatus.OK,
     success: true,
-    message: 'Blog Updated is Successfully!',
+    message: 'Blog updated successfully',
     data: result,
   });
 });
@@ -33,11 +33,10 @@ const updatedBlog: RequestHandler = catchAsync(async (req, res, next) => {
 const deleteBlog: RequestHandler = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const result = await blogServices.deleteBlogFromDB(id);
-  sendResponse(res, {
+  sendRespons(res, {
     statusCode: HttpStatus.OK,
     success: true,
-    message: 'Blog Deleted is Successfully!',
-    data: result,
+    message: 'Blog deleted successfully',
   });
 });
 //Get All a Blogs
@@ -46,7 +45,7 @@ const getAllBlogs: RequestHandler = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statusCode: HttpStatus.OK,
     success: true,
-    message: 'Blog are retrived Successfully!',
+    message: 'Blogs fetched successfully',
     data: result,
   });
 });

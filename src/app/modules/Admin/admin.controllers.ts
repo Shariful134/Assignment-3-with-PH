@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { RequestHandler } from 'express';
-import sendResponse from '../../utils/sendResponse';
+import { sendRespons, sendResponse } from '../../utils/sendResponse';
 import { adminService } from './admin.service';
 import catchAsync from '../../utils/catchAsync';
 import { HttpStatus } from 'http-status-ts';
@@ -36,11 +36,10 @@ const blockedUserController: RequestHandler = catchAsync(
     const { userId } = req.params;
     const payload = req.body;
     const result = await adminService.blockedUserByAdminIntoDB(userId, payload);
-    sendResponse(res, {
+    sendRespons(res, {
       statusCode: HttpStatus.OK,
       success: true,
       message: 'User Blocked Successfully!',
-      data: result,
     });
   },
 );
@@ -50,11 +49,10 @@ const deleteBlogController: RequestHandler = catchAsync(
   async (req, res, next) => {
     const { id } = req.params;
     const result = await adminService.deleteBlogbyAdminIntoDB(id);
-    sendResponse(res, {
+    sendRespons(res, {
       statusCode: HttpStatus.OK,
       success: true,
       message: 'Blog Deleted Successfully!',
-      data: result,
     });
   },
 );

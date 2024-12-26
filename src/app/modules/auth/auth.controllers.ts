@@ -12,7 +12,7 @@ const registerUser: RequestHandler = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statusCode: HttpStatus.CREATED,
     success: true,
-    message: 'Registration is Successfully!',
+    message: 'User registered successfully',
     data: result,
   });
 });
@@ -23,7 +23,7 @@ const loginUser: RequestHandler = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statusCode: HttpStatus.OK,
     success: true,
-    message: 'User Login Successfully!',
+    message: 'Login Successfully!',
     data: result,
   });
 });

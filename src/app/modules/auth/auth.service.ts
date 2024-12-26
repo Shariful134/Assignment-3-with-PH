@@ -21,22 +21,24 @@ const registerUserIntoDB = async (payload: TUser) => {
 //loginUser
 const loginUserIntoDB = async (payload: TUserLogin) => {
   const user = await User.isUserExistsByEmail(payload.email);
-  //   console.log(user?._id.toString());
 
   //checking user is exists
   if (!user) {
-    throw new Error('User is not found!');
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //checking user isBlocked
   const isBlocked = user?.isBlocked;
   if (isBlocked) {
-    throw new Error('This Usre is Allready Blocked!');
+    throw new AppError(
+      HttpStatus.UNAUTHORIZED,
+      'This Usre is Allready Blocked!',
+    );
   }
 
   //check if the password is correct or uncorrect
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
-    throw new Error(' This Password do not Matched!');
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //creating a token and sent to the client side
