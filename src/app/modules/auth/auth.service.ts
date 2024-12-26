@@ -1,4 +1,6 @@
+import { HttpStatus } from 'http-status-ts';
 import config from '../../config';
+import AppError from '../../errors/AppError';
 import { TUser } from '../User/user.interface';
 import { User } from '../User/user.model';
 import { TUserLogin } from './auth.interface';
@@ -8,7 +10,7 @@ import jwt from 'jsonwebtoken';
 const registerUserIntoDB = async (payload: TUser) => {
   const user = await User.findOne({ email: payload.email });
   if (user) {
-    throw new Error('User already exists');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'User already exists');
   }
 
   const result = await User.create(payload);

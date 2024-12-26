@@ -21,7 +21,7 @@ const updatedBlogIntoDB = async (id: string, payload: Partial<TBlog>) => {
   return result;
 };
 
-//deleting a Blog
+//delete a Blog
 const deleteBlogFromDB = async (id: string) => {
   const result = await Blog.findByIdAndDelete(id);
   return result;

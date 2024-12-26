@@ -3,6 +3,8 @@ import catchAsync from '../utils/catchAsync';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { TUserRole } from '../modules/User/user.interface';
+import AppError from '../errors/AppError';
+import { HttpStatus } from 'http-status-ts';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -10,7 +12,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     //if the token is sent to the client side
     if (!token) {
-      throw new Error('Your are not Authorized');
+      throw new AppError(HttpStatus.UNAUTHORIZED, 'Your are not Authorized');
     }
 
     //check if the token is valid
@@ -19,13 +21,18 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
       function (error, decoded) {
-        console.log(decoded);
         if (error) {
-          throw new Error('Your are not Authorized!');
+          throw new AppError(
+            HttpStatus.UNAUTHORIZED,
+            'Your are not Authorized!',
+          );
         }
         const role = (decoded as JwtPayload)?.data?.role;
         if (requiredRoles && !requiredRoles.includes(role)) {
-          throw new Error('Your are not Authorized!');
+          throw new AppError(
+            HttpStatus.UNAUTHORIZED,
+            'Your are not Authorized!',
+          );
         }
         req.user = decoded as JwtPayload;
         next();

@@ -17,7 +17,7 @@ const adminController: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
-// //login admin
+//login admin
 const adminLoginController: RequestHandler = catchAsync(
   async (req, res, next) => {
     const result = await adminService.loginAdminIntoDB(req.body);
@@ -30,7 +30,38 @@ const adminLoginController: RequestHandler = catchAsync(
   },
 );
 
+// Blocked User
+const blockedUserController: RequestHandler = catchAsync(
+  async (req, res, next) => {
+    const { userId } = req.params;
+    const payload = req.body;
+    const result = await adminService.blockedUserByAdminIntoDB(userId, payload);
+    sendResponse(res, {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: 'User Blocked Successfully!',
+      data: result,
+    });
+  },
+);
+
+// Delete Blog by Admin
+const deleteBlogController: RequestHandler = catchAsync(
+  async (req, res, next) => {
+    const { id } = req.params;
+    const result = await adminService.deleteBlogbyAdminIntoDB(id);
+    sendResponse(res, {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: 'Blog Deleted Successfully!',
+      data: result,
+    });
+  },
+);
+
 export const adminControllers = {
   adminController,
   adminLoginController,
+  blockedUserController,
+  deleteBlogController,
 };

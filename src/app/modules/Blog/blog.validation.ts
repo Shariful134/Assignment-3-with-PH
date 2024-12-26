@@ -1,5 +1,6 @@
 import z from 'zod';
 
+//validation create to blog
 const blogValidationSchema = z.object({
   body: z.object({
     title: z.string({ message: 'title is required' }),
@@ -8,7 +9,7 @@ const blogValidationSchema = z.object({
   }),
 });
 
-// Validation of Uodating Blog
+// Validation  Update to Blog
 const updatedBlogValidationSchema = z.object({
   body: z.object({
     title: z.string({ message: 'title is required' }).optional(),

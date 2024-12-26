@@ -15,13 +15,14 @@ router.post(
   blogControllers.createBlog,
 );
 
-//updating a Blog
+//updatte a Blog
 router.patch(
   '/:id',
-  validateRequest(blogValidation.blogValidationSchema),
+  auth(USER_ROLE.user),
+  validateRequest(blogValidation.updatedBlogValidationSchema),
   blogControllers.updatedBlog,
 );
-router.delete('/:id', blogControllers.deleteBlog);
+router.delete('/:id', auth(USER_ROLE.user), blogControllers.deleteBlog);
 
 router.get('/', blogControllers.getAllBlogs);
 

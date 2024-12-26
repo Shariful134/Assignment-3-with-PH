@@ -6,21 +6,20 @@ import sendResponse from '../../utils/sendResponse';
 import { HttpStatus } from 'http-status-ts';
 import catchAsync from '../../utils/catchAsync';
 
-//creating a Blog
+//create a Blog
 const createBlog: RequestHandler = catchAsync(async (req, res, next) => {
   const result = await blogServices.createBlogIntoDB(req.body);
   sendResponse(res, {
-    statusCode: HttpStatus.OK,
+    statusCode: HttpStatus.CREATED,
     success: true,
     message: 'Blog created is Successfully!',
     data: result,
   });
 });
 
-//updating a Blog
+//update a Blog
 const updatedBlog: RequestHandler = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-
   const result = await blogServices.updatedBlogIntoDB(id, req.body);
   sendResponse(res, {
     statusCode: HttpStatus.OK,
@@ -30,7 +29,7 @@ const updatedBlog: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
-//deleteing a Blog
+//delete a Blog
 const deleteBlog: RequestHandler = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const result = await blogServices.deleteBlogFromDB(id);

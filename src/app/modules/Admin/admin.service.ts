@@ -1,13 +1,17 @@
+import { HttpStatus } from 'http-status-ts';
 import config from '../../config';
+import AppError from '../../errors/AppError';
+import { Blog } from '../Blog/blog.model';
+import { User } from '../User/user.model';
 import { TAdmin, TAdminLogin } from './admin.interface';
 import { Admin } from './admin.model';
 import jwt from 'jsonwebtoken';
 
-// /creating admin
+// creating admin
 const createAdminIntoDB = async (payload: TAdmin) => {
   const user = await Admin.findOne({ email: payload.email });
   if (user) {
-    throw new Error('Admin already exists');
+    throw new AppError(HttpStatus.FORBIDDEN, 'Admin already exists');
   }
 
   const result = await Admin.create(payload);
@@ -47,7 +51,44 @@ const loginAdminIntoDB = async (payload: TAdminLogin) => {
   return accessToken;
 };
 
+//Blocked User by admin
+const blockedUserByAdminIntoDB = async (
+  id: string,
+  payload: Record<string, unknown>,
+) => {
+  const user = await User.findById(id);
+
+  //check if the user is exists
+  if (!user) {
+    throw new Error('User is not Found!');
+  }
+
+  //check if user is blocked or unblocked
+  const isBlocked = user?.isBlocked;
+  if (isBlocked) {
+    throw new Error('User Allready Blocked!');
+  }
+
+  const result = await User.findByIdAndUpdate(id, payload);
+  return result;
+};
+
+// Delete Blog By Admin
+const deleteBlogbyAdminIntoDB = async (id: string) => {
+  const blog = await Blog.findById(id);
+
+  //check if the user is Exists
+  if (!blog) {
+    throw new Error('Blog is not Found!');
+  }
+
+  const result = await Blog.findByIdAndDelete(id);
+  return result;
+};
+
 export const adminService = {
   createAdminIntoDB,
   loginAdminIntoDB,
+  blockedUserByAdminIntoDB,
+  deleteBlogbyAdminIntoDB,
 };
