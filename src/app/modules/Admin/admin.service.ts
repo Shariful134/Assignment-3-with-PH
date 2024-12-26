@@ -1,65 +1,20 @@
 import { HttpStatus } from 'http-status-ts';
-import config from '../../config';
 import AppError from '../../errors/AppError';
 import { Blog } from '../Blog/blog.model';
 import { User } from '../User/user.model';
-import { TAdmin, TAdminLogin } from './admin.interface';
-import { Admin } from './admin.model';
-import jwt from 'jsonwebtoken';
-
-// creating admin
-const createAdminIntoDB = async (payload: TAdmin) => {
-  const user = await Admin.findOne({ email: payload.email });
-  if (user) {
-    throw new AppError(HttpStatus.BAD_REQUEST, 'Admin already exists');
-  }
-
-  const result = await Admin.create(payload);
-  return result;
-};
-
-// creating admin
-const loginAdminIntoDB = async (payload: TAdminLogin) => {
-  const user = await Admin.isUserExistsByEmail(payload.email);
-
-  //checking user is exists
-  if (!user) {
-    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
-  }
-
-  //check if the password is correct or uncorrect
-  if (!(await Admin.isPasswordMatched(payload?.password, user?.password))) {
-    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
-  }
-
-  //creating a token and sent to the client side
-  const jwtUserData = {
-    // userId: user?._id.toString(),
-    userEmail: user?.email,
-    role: user?.role,
-  };
-
-  //access token
-  const accessToken = jwt.sign(
-    {
-      data: jwtUserData,
-    },
-    config.jwt_access_secret as string,
-    { expiresIn: '20d' },
-  );
-
-  return accessToken;
-};
 
 //Blocked User by admin
-const blockedUserByAdminIntoDB = async (
-  id: string,
-  payload: Record<string, unknown>,
-) => {
+const blockedUserByAdminIntoDB = async (id: string) => {
   const user = await User.findById(id);
 
   //check if the user is exists
   if (!user) {
+    throw new AppError(HttpStatus.NOT_FOUND, 'User not Found!');
+  }
+
+  //check if the user is user or admin
+
+  if (user.role === 'admin') {
     throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
@@ -69,7 +24,11 @@ const blockedUserByAdminIntoDB = async (
     throw new AppError(HttpStatus.BAD_REQUEST, 'User Allready Blocked!');
   }
 
-  const result = await User.findByIdAndUpdate(id, payload);
+  const result = await User.findByIdAndUpdate(
+    id,
+    { isBlocked: true },
+    { new: true },
+  );
   return result;
 };
 
@@ -87,8 +46,6 @@ const deleteBlogbyAdminIntoDB = async (id: string) => {
 };
 
 export const adminService = {
-  createAdminIntoDB,
-  loginAdminIntoDB,
   blockedUserByAdminIntoDB,
   deleteBlogbyAdminIntoDB,
 };

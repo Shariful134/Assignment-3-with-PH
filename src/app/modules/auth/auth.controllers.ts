@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { RequestHandler } from 'express';
-import sendResponse from '../../utils/sendResponse';
 import { HttpStatus } from 'http-status-ts';
 import catchAsync from '../../utils/catchAsync';
 import { authServices } from './auth.service';
+import { sendResponse } from '../../utils/sendResponse';
 
 //registration User
 const registerUser: RequestHandler = catchAsync(async (req, res, next) => {

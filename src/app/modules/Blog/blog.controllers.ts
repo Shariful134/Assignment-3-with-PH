@@ -2,13 +2,19 @@
 /* eslint-disable no-unused-vars */
 import { RequestHandler } from 'express';
 import { blogServices } from './blog.service';
-import { sendRespons, sendResponse } from '../../utils/sendResponse';
 import { HttpStatus } from 'http-status-ts';
 import catchAsync from '../../utils/catchAsync';
+import { sendResponse } from '../../utils/sendResponse';
+import { sendRespons } from '../../utils/sendRespons';
 
 //create a Blog
 const createBlog: RequestHandler = catchAsync(async (req, res, next) => {
-  const result = await blogServices.createBlogIntoDB(req.body);
+  const userData = req.user;
+  const authorId = userData?.data?.authorId;
+
+  const blogData = { ...req.body, author: authorId };
+  console.log(blogData);
+  const result = await blogServices.createBlogIntoDB(blogData);
   sendResponse(res, {
     statusCode: HttpStatus.CREATED,
     success: true,

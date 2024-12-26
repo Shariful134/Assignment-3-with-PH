@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 import { Model } from 'mongoose';
 import { USER_ROLE } from './user.contstant';
 
 export type TUser = {
+  _id?: any;
   name: string;
   email: string;
   password: string;

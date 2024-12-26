@@ -10,8 +10,15 @@ import { Blog } from './blog.model';
 const createBlogIntoDB = async (payload: TBlog) => {
   const user = await User.findById(payload.author);
 
+  //check if the user is exist
   if (!user) {
     throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
+  }
+
+  //check if the user is blocked
+  const isBlocked = user.isBlocked;
+  if (isBlocked) {
+    throw new AppError(HttpStatus.BAD_REQUEST, 'User Allready Blocked');
   }
   const result = await Blog.create(payload);
   return result;
@@ -19,6 +26,11 @@ const createBlogIntoDB = async (payload: TBlog) => {
 
 //updating a Blog
 const updatedBlogIntoDB = async (id: string, payload: Partial<TBlog>) => {
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    throw new AppError(HttpStatus.NOT_FOUND, 'Blog is not Found!');
+  }
   const result = await Blog.findByIdAndUpdate(id, payload);
   return result;
 };
@@ -28,7 +40,7 @@ const deleteBlogFromDB = async (id: string) => {
   const blog = await Blog.findById(id);
 
   if (!blog) {
-    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
+    throw new AppError(HttpStatus.NOT_FOUND, 'Blog is not Found!');
   }
   const result = await Blog.findByIdAndDelete(id);
   return result;

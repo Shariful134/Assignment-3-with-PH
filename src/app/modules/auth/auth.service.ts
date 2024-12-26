@@ -31,7 +31,7 @@ const loginUserIntoDB = async (payload: TUserLogin) => {
   const isBlocked = user?.isBlocked;
   if (isBlocked) {
     throw new AppError(
-      HttpStatus.UNAUTHORIZED,
+      HttpStatus.BAD_REQUEST,
       'This Usre is Allready Blocked!',
     );
   }
@@ -43,7 +43,7 @@ const loginUserIntoDB = async (payload: TUserLogin) => {
 
   //creating a token and sent to the client side
   const jwtUserData = {
-    // userId: user?._id.toString(),
+    authorId: user?._id.toString(),
     userEmail: user?.email,
     role: user?.role,
   };
