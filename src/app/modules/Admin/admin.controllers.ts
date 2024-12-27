@@ -3,8 +3,8 @@
 import { RequestHandler } from 'express';
 import { adminService } from './admin.service';
 import catchAsync from '../../utils/catchAsync';
-import { HttpStatus } from 'http-status-ts';
 import { sendRespons } from '../../utils/sendRespons';
+import { StatusCodes } from 'http-status-codes';
 
 // Blocked User
 const blockedUserController: RequestHandler = catchAsync(
@@ -12,7 +12,7 @@ const blockedUserController: RequestHandler = catchAsync(
     const { userId } = req.params;
     await adminService.blockedUserByAdminIntoDB(userId);
     sendRespons(res, {
-      statusCode: HttpStatus.OK,
+      statusCode: StatusCodes.OK,
       success: true,
       message: 'User Blocked Successfully!',
     });
@@ -25,7 +25,7 @@ const deleteBlogController: RequestHandler = catchAsync(
     const { id } = req.params;
     await adminService.deleteBlogbyAdminIntoDB(id);
     sendRespons(res, {
-      statusCode: HttpStatus.OK,
+      statusCode: StatusCodes.OK,
       success: true,
       message: 'Blog Deleted Successfully!',
     });

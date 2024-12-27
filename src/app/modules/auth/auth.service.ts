@@ -1,4 +1,4 @@
-import { HttpStatus } from 'http-status-ts';
+import { StatusCodes } from 'http-status-codes';
 import config from '../../config';
 import AppError from '../../errors/AppError';
 import { TUser } from '../User/user.interface';
@@ -10,12 +10,14 @@ import jwt from 'jsonwebtoken';
 const registerUserIntoDB = async (payload: TUser) => {
   const user = await User.findOne({ email: payload.email });
   if (user) {
-    throw new AppError(HttpStatus.BAD_REQUEST, 'User already exists');
+    throw new AppError(StatusCodes.BAD_REQUEST, 'User already exists');
   }
 
   const result = await User.create(payload);
 
-  return result;
+  const { _id, name, email } = result;
+
+  return { _id: _id.toString(), name: name, email: email };
 };
 
 //loginUser
@@ -24,21 +26,21 @@ const loginUserIntoDB = async (payload: TUserLogin) => {
 
   //checking user is exists
   if (!user) {
-    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //checking user isBlocked
   const isBlocked = user?.isBlocked;
   if (isBlocked) {
     throw new AppError(
-      HttpStatus.BAD_REQUEST,
+      StatusCodes.BAD_REQUEST,
       'This Usre is Allready Blocked!',
     );
   }
 
   //check if the password is correct or uncorrect
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
-    throw new AppError(HttpStatus.UNAUTHORIZED, 'Invalid credentials');
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'Invalid credentials');
   }
 
   //creating a token and sent to the client side
@@ -57,7 +59,7 @@ const loginUserIntoDB = async (payload: TUserLogin) => {
     { expiresIn: '20d' },
   );
 
-  return accessToken;
+  return { token: accessToken };
 };
 
 export const authServices = {

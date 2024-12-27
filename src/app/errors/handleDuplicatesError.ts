@@ -6,12 +6,11 @@ export const handleDuplicatesError = (error: any): TGenericErrorResponse => {
 
   const extractMEssage = match && match[1];
 
-  const errorSources: TErrorSources = [
-    {
-      path: '',
-      message: `${extractMEssage} is Allready Exists`,
-    },
-  ];
+  const errorSources: TErrorSources = {
+    path: '',
+    message: `${extractMEssage} is Allready Exists`,
+  };
+
   const statusCode = 400;
   return {
     statusCode,

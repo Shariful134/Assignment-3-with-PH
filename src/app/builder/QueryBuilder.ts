@@ -1,4 +1,4 @@
-import { FilterQuery, Query } from 'mongoose';
+import mongoose, { FilterQuery, Query } from 'mongoose';
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
@@ -32,6 +32,12 @@ class QueryBuilder<T> {
     const excludeFields = ['search', 'sortBy', 'sortOrder', 'filter'];
     excludeFields.forEach((el) => delete queryObj[el]);
 
+    if (this.query.filter) {
+      const filterField = this.query.filter;
+      if (mongoose.Types.ObjectId.isValid(filterField as string)) {
+        queryObj['author'] = new mongoose.Types.ObjectId(filterField as string);
+      }
+    }
     this.modelQuery = this.modelQuery.find(queryObj);
     return this;
   }

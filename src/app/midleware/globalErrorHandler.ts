@@ -1,27 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
- 
+
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 
 import { ZodError } from 'zod';
 import { handleZodError } from '../errors/handleZodError';
 import { TErrorSources } from '../interface/error';
 import config from '../config';
-import { handleMongooseError } from '../errors/handleMongooseError';
 import { handleMongooseCastError } from '../errors/handleMongooseCastError';
 import { handleDuplicatesError } from '../errors/handleDuplicatesError';
 import AppError from '../errors/AppError';
+import handleMongooseError from '../errors/handleMongooseError';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   //set default values
   let statusCode = 500;
   let message = 'Somthing went wrong';
-  let errorSources: TErrorSources = [
-    {
-      path: '',
-      message: 'Something went wrong!',
-    },
-  ];
+  let errorSources: TErrorSources = {
+    path: '',
+    message: 'Something went wrong!',
+  };
 
   if (error instanceof ZodError) {
     const simplifiedErrror = handleZodError(error);
@@ -46,20 +44,16 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   } else if (error instanceof AppError) {
     statusCode = error?.statusCode;
     message = error?.message;
-    errorSources = [
-      {
-        path: ' ',
-        message: error?.message,
-      },
-    ];
+    errorSources = {
+      path: ' ',
+      message: error?.message,
+    };
   } else if (error instanceof Error) {
     message = error?.message;
-    errorSources = [
-      {
-        path: ' ',
-        message: error?.message,
-      },
-    ];
+    errorSources = {
+      path: ' ',
+      message: error?.message,
+    };
   }
 
   res.status(statusCode).json({

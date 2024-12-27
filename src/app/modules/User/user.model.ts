@@ -17,6 +17,7 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: true,
+      select: 0,
     },
     role: {
       type: String,
@@ -42,15 +43,10 @@ userSchema.pre('save', async function (next) {
   );
   next();
 });
-// set '' after saving password
-userSchema.post('save', function (doc, next) {
-  doc.password = ' ';
-  next();
-});
 
 // check user
 userSchema.statics.isUserExistsByEmail = async function (email: string) {
-  return await User.findOne({ email });
+  return await User.findOne({ email }).select('+password');
   // .select('+password')
 };
 

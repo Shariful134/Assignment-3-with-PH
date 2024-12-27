@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { HttpStatus } from 'http-status-ts';
+import { StatusCodes } from 'http-status-codes';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const notFound = (req: Request, res: Response, next: NextFunction) => {
-  res.status(HttpStatus.NOT_FOUND).json({
+  res.status(StatusCodes.NOT_FOUND).json({
     success: false,
     message: 'API Not Found!',
     error: '',
