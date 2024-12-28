@@ -35,8 +35,8 @@ const handleMongooseError = (
     message: '',
   };
   if (err) {
-    errorSources.path = err.errors.name.path;
-    errorSources.message = err.errors.name?.message;
+    errorSources.path = err.errors?.name?.path;
+    errorSources.message = err.errors?.name?.message;
   }
 
   const statusCode = 400;
