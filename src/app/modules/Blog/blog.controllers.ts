@@ -9,6 +9,7 @@ import { StatusCodes } from 'http-status-codes';
 
 const createBlog: RequestHandler = catchAsync(async (req, res, next) => {
   const author = req.user.data.authorId;
+  console.log('hfg:', author);
   const blogData = { ...req.body, author };
   const result = await blogServices.createBlogIntoDB(blogData);
   sendResponse(res, {
